@@ -1,0 +1,23 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules"
+  ],
+  "verbose": true,
+  "execMap": {
+    "": "babel-node",
+    "js": "node --harmony"
+  },
+  "watch": [
+    "routes/",
+    "views/",
+    "good/",
+    "imagesManage/",
+    "app.js"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js json jade"
+}
