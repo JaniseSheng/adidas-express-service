@@ -1,76 +1,195 @@
 const express = require('express');
+var app = express();
 const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const hbs  = require('express-handlebars');
-const routes = require('./routes/index');
+const fs = require('fs');
 
-const app = express();
-
-//设置跨域访问
-app.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-    res.header("X-Powered-By",' 3.2.1')
-    res.header("Content-Type", "application/json;charset=utf-8");
-    next();
-});
-
-// view engine setup (handlebars)
-app.set('views', path.join(__dirname, 'views'));
-app.engine( 'hbs', hbs( {
-    extname: 'hbs',
-    defaultLayout: 'main',
-    layoutsDir: __dirname + '/views/layouts/',
-    partialsDir: __dirname + '/views/partials/'
-} ) );
-
-app.set( 'view engine', 'hbs' );
-
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', routes);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.json({
-      message: err.message,
-      error: err
-    });
-  });
+const filrUrl = (fileName, res)=> {
+  const filrUrl = './public/' + fileName + '.text';
+  fs.readFile(filrUrl, 'utf-8', function(err, data) {
+    const number = parseInt(data) + 1
+    fs.writeFile(filrUrl, number, 'utf-8', function(err) {
+      res.json({
+        success: true,
+        value: number
+      })
+    })
+  })
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.json({
-    message: err.message,
-    error: {}
-  });
+/**
+* menu点击率
+**/
+app.get('/sxxApi/menu1', function(req, res, next) {
+  filrUrl('menu1', res)
+});
+app.get('/sxxApi/menu2', function(req, res, next) {
+  filrUrl('menu2', res)
+});
+app.get('/sxxApi/menu3', function(req, res, next) {
+  filrUrl('menu3', res)
+});
+app.get('/sxxApi/menu4', function(req, res, next) {
+  filrUrl('menu4', res)
+});
+app.get('/sxxApi/menu0', function(req, res, next) {
+  filrUrl('menu0', res)
 });
 
+/**
+* detail点击率
+**/
+app.get('/sxxApi/detail1', function(req, res, next) {
+  filrUrl('detail1', res)
+});
+app.get('/sxxApi/detail2', function(req, res, next) {
+  filrUrl('detail2', res)
+});
+app.get('/sxxApi/detail3', function(req, res, next) {
+  filrUrl('detail3', res)
+});
+app.get('/sxxApi/detail4', function(req, res, next) {
+  filrUrl('detail4', res)
+});
+app.get('/sxxApi/detail0', function(req, res, next) {
+  filrUrl('detail0', res)
+});
 
-module.exports = app;
+/**
+* 查看总数据
+**/
+app.get('/sxxApi/getAllData', function(req, res, next) {
+  const menu0 = './public/menu0.text';
+  const menu1 = './public/menu1.text';
+  const menu2 = './public/menu2.text';
+  const menu3 = './public/menu3.text';
+  const menu4 = './public/menu4.text';
+  const detail0 = './public/detail0.text';
+  const detail1 = './public/detail1.text';
+  const detail2 = './public/detail2.text';
+  const detail3 = './public/detail3.text';
+  const detail4 = './public/detail4.text';
+  var menuData = 0;
+  var detailData = 0;
+  fs.readFile(menu0, 'utf-8', function(err, data0) {
+    menuData+=parseInt(data0)
+    fs.readFile(menu1, 'utf-8', function(err, data1) {
+      menuData+=parseInt(data1)
+      fs.readFile(menu2, 'utf-8', function(err, data2) {
+        menuData+=parseInt(data2)
+        fs.readFile(menu3, 'utf-8', function(err, data3) {
+          menuData+=parseInt(data3)
+          fs.readFile(menu4, 'utf-8', function(err, data4) {
+            menuData+=parseInt(data4)
+            fs.readFile(detail0, 'utf-8', function(err, item0) {
+              detailData+=parseInt(item0)
+              fs.readFile(detail1, 'utf-8', function(err, item1) {
+                detailData+=parseInt(item1)
+                fs.readFile(detail2, 'utf-8', function(err, item2) {
+                  detailData+=parseInt(item2)
+                  fs.readFile(detail3, 'utf-8', function(err, item3) {
+                    detailData+=parseInt(item3)
+                    fs.readFile(detail4, 'utf-8', function(err, item4) {
+                      detailData+=parseInt(item4)
+                      res.json({
+                        success: true,
+                        data: {
+                          menuData,
+                          detailData,
+dataListsMenu: [
+                            {
+                              value: data0,
+                              label: '此处有雷'
+                            },
+                            {
+                              value: data1,
+                              label: '城市滑行'
+                            },
+                            {
+                              value: data2,
+                              label: '创意公园'
+                            },
+                            {
+                              value: data3,
+                              label: '地下尬舞'
+                            },
+                            {
+                              value: data4,
+                              label: 'ULTIMATE大现身'
+                            }
+                          ],
+                          dataListsShare: [
+                            {
+                              value: item0,
+                              label: '此处有雷'
+                            },
+                            {
+                              value: item1,
+                              label: '城市滑行'
+                            },
+                            {
+                              value: item2,
+                              label: '创意公园'
+                            },
+                            {
+                              value: item3,
+                              label: '地下尬舞'
+                            },
+                            {
+                              value: item4,
+                              label: 'ULTIMATE大现身'
+                            }
+                          ]
+                        }
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+});
+
+/**
+** 数据清零
+*/
+app.get('/sxxApi/dataReset', function(req, res, next) {
+  const menu0 = './public/menu0.text';
+  const menu1 = './public/menu1.text';
+  const menu2 = './public/menu2.text';
+  const menu3 = './public/menu3.text';
+  const menu4 = './public/menu4.text';
+  const detail0 = './public/detail0.text';
+  const detail1 = './public/detail1.text';
+  const detail2 = './public/detail2.text';
+  const detail3 = './public/detail3.text';
+  const detail4 = './public/detail4.text';
+  fs.writeFile(menu0, 0, 'utf-8', function(err) {
+    fs.writeFile(menu1, 0, 'utf-8', function(err) {
+      fs.writeFile(menu2, 0, 'utf-8', function(err) {
+        fs.writeFile(menu3, 0, 'utf-8', function(err) {
+          fs.writeFile(menu4, 0, 'utf-8', function(err) {
+            fs.writeFile(detail0, 0, 'utf-8', function(err) {
+              fs.writeFile(detail1, 0, 'utf-8', function(err) {
+                fs.writeFile(detail2, 0, 'utf-8', function(err) {
+                  fs.writeFile(detail3, 0, 'utf-8', function(err) {
+                    fs.writeFile(detail4, 0, 'utf-8', function(err) {
+                      res.json({
+                        success: true
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+});
+
+app.listen(8009)
